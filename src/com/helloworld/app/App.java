@@ -1,8 +1,5 @@
 package com.helloworld.app;
 
-/**
- * Hello world!
- */
 public class App
 {
 
