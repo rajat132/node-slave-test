@@ -1,0 +1,1 @@
+# node-slave-test
