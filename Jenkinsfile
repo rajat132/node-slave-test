@@ -7,9 +7,12 @@ pipeline {
             }
             steps{
                 checkout scm
-                sh "mvn --version"
-                sh "mvn clean package"
-                stash includes: '**/target/*.jar', name: 'app'
+                sh "mvn compile"
+            }
+            post{
+                always{
+                    cleanWs()
+                }
             }
         }
         stage('Test') {
@@ -17,14 +20,13 @@ pipeline {
                 label 'slave2'
             }
             steps {
-                unstash 'app'
                 sh 'mvn test'
             }
-        }
-    }
-    post{
-        always{
-            cleanWs()
+            post{
+                always{
+                    cleanWs()
+                }
+            }
         }
     }
 }
