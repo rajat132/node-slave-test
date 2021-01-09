@@ -1,28 +1,22 @@
 pipeline {
-    agent any
-    tools {
-        dockerTool 'docker'
-        maven 'maven'
-        gradle 'gradle'
-    }
+    agent none
     stages {
-        stage('Checkout'){
-            steps{
-                checkout([$class: 'GitSCM', branches: [[name: '*/master']], 
-                doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], 
-                userRemoteConfigs: [[credentialsId: 'github-pvt-repo-token', url: 'https://github.com/rajat132/node-slave-test.git']]])
-            }
-        }
         stage('Build'){
+            agent {
+                label 'slave1'
+            }
             steps{
                 sh "mvn --version"
-                //sh "mvn clean install"
                 sh "mvn clean package"
-                //sh 'mvn -B -DskipTests clean package'
+                stash includes: '**/target/*.jar', name: 'app'
             }
         }
         stage('Test') {
+            agent {
+                label 'slave2'
+            }
             steps {
+                unstash 'app'
                 sh 'mvn test'
             }
         }
