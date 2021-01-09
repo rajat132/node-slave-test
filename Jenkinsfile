@@ -6,6 +6,7 @@ pipeline {
                 label 'slave1'
             }
             steps{
+                checkout scm
                 sh "mvn --version"
                 sh "mvn clean package"
                 stash includes: '**/target/*.jar', name: 'app'
